@@ -1,0 +1,129 @@
+GET _search
+{
+  "query": {
+    "match": {
+      "_index" : "resources"
+    }
+  }
+}
+ 
+GET resources/_search
+
+{
+  "query": {
+    "match_all": {}
+  }
+}
+ 
+#see mapping of an index
+
+GET /resources/_mapping
+
+#search for an object equal to specific id
+
+GET /resources/_search
+{"query": {
+  "match": {
+    "_id": "plan123"
+    }
+  }
+}
+ 
+#has parent
+
+GET /resources/_search
+{
+  "query" : {
+    "has_parent" : {
+      "parent_type" : "plan",
+      "query" : {
+         "match_all" : {}
+       }
+     }
+   }
+}
+ 
+ 
+#has_child
+
+GET /resources/_search
+{
+  "query": {
+  "has_child": {
+      "type": "planserviceCostShares",
+      "query":{
+        "range": {
+              "copay": {
+                "gte": 1
+              }
+        }
+      }
+  }
+  }
+}
+ 
+
+GET /resources/_search
+{
+  "query": {
+    "has_child": {
+      "type": "planservice",
+      "query": {
+        "has_child": {
+          "type": "service",
+          "query": {
+            "match": {
+              "objectId": "12xvxc345ssdsds-508"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#has parent
+GET /resources/_search
+{
+  "query": {
+    "has_parent": {
+      "parent_type": "linkedPlanServices",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "objectId": "linkedService124"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+#Search for specific copay and deductible
+GET /resources/_search
+{
+  "query": {
+    "bool": {
+      "must": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "copay": 30
+              }
+            },
+            {
+              "match": {
+                "deductible": 200
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
